@@ -150,4 +150,3 @@ function dot2Com(textResult) {
     }
     return textResult;
 }
-}
