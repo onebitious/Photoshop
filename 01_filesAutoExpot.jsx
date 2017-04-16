@@ -80,7 +80,7 @@
                 var fileObj = new File(afterFolder + "/" + fileName[0]); // 1の場合のファイル名の処理
             }
 
-            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれたものを関数に格納
+            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれたものを変数に格納
 
             //▼保存
             switch (n + 0) {
