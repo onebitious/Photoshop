@@ -31,7 +31,18 @@
             alert("整数、または小数を入力してください。");
         }
     }
+    var textResult01 = myDialog.editText01.text, //入力された解像度の数値を変数に格納
+        textResult02 = myDialog.editText02.text,
+        textResult03 = myDialog.editText03.text,
+        textResult04 = myDialog.editText04.text;
 
+    var array = [textResult01, textResult02, textResult03, textResult04]; //配列に追加
+    var textArray = []; //空欄以外を格納する配列を準備
+    for (var k = 0, arrayLength = array.length; k < arrayLength; k++) {
+        if (array[k] != "") {
+            textArray.push(array[k]); //空欄以外の入力値を配列に追加
+        }
+    }
     var preFolder = Folder.selectDialog("処理するフォルダを選択してください");
     if (!preFolder) {
         alert("処理を中断します。"); //キャンセルの場合処理を抜ける
@@ -51,6 +62,9 @@
     /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     リサイズと保存処理
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    var myProDialog = new Window('palette', '処理中...', [100, 100, 505, 180]);
+    myProDialog.myProgressBar = myProDialog.add("progressbar", [10, 30, 10 + 384, 30 + 15], 0, 100);
+    myProDialog.show();
     for (var j = 0, preFilesLength = preFiles.length; j < preFilesLength; j++) { //開いてから処理を開始する
         var doc = app.activeDocument; //ドキュメント
         var fileName = doc.name; //ファイル名
@@ -58,19 +72,6 @@
         //var docPath = activeDocument.path; //ディレクトリ
         var docWidth = activeDocument.width.value; //横幅
         var docHeight = activeDocument.height.value; //高さ
-
-        var textResult01 = myDialog.editText01.text, //小数点をカンマに変換する関数を実行し、変数に格納
-            textResult02 = myDialog.editText02.text,
-            textResult03 = myDialog.editText03.text,
-            textResult04 = myDialog.editText04.text;
-
-        var array = [textResult01, textResult02, textResult03, textResult04]; //配列に追加
-        var textArray = []; //配列を準備
-        for (var k = 0, arrayLength = array.length; k < arrayLength; k++) {
-            if (array[k] != "") {
-                textArray.push(array[k]); //空欄以外の入力値を配列に追加
-            }
-        }
 
         for (var l = 0, textArrayLength = textArray.length; l < textArrayLength; l++) {
             doc.resizeImage(docWidth * textArray[l], docHeight * textArray[l]); //指定された数値でリサイズ
@@ -80,19 +81,19 @@
                 var fileObj = new File(afterFolder + "/" + fileName[0]); // 1の場合のファイル名の処理
             }
 
-            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれたものを変数に格納
+            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれたものを関数に格納
 
             //▼保存
             switch (n + 0) {
-            case 0:
-                pngOutput(); //PNG保存
-                break;
-            case 1:
-                jpegOutput(); //JPEG保存
-                break;
-            case 2:
-                gifOutput(); //GIF保存
-                break;
+                case 0:
+                    pngOutput(); //PNG保存
+                    break;
+                case 1:
+                    jpegOutput(); //JPEG保存
+                    break;
+                case 2:
+                    gifOutput(); //GIF保存
+                    break;
             }
 
             //▼復帰
@@ -103,7 +104,15 @@
         //▼保存しないで閉じる
         activeDocument.close(SaveOptions.DONOTSAVECHANGES);
     }
+    var processLength = afterFolder.length;
 
+    for (var m = 0; myProDialog.myProgressBar.value < 100; m++) {
+
+        myProDialog.myProgressBar.value += 100 / processLength;
+
+    }
+
+    myProDialog.close();
     alert("処理が終わりました");
 }
 
