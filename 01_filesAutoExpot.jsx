@@ -65,6 +65,7 @@
     var myProDialog = new Window('palette', '処理中...', [100, 100, 505, 180]);
     myProDialog.myProgressBar = myProDialog.add("progressbar", [10, 30, 10 + 384, 30 + 15], 0, 100);
     myProDialog.show();
+
     for (var j = 0, preFilesLength = preFiles.length; j < preFilesLength; j++) { //開いてから処理を開始する
         var doc = app.activeDocument; //ドキュメント
         var fileName = doc.name; //ファイル名
@@ -103,13 +104,11 @@
         }
         //▼保存しないで閉じる
         activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-    }
-    var processLength = afterFolder.length;
 
-    for (var m = 0; myProDialog.myProgressBar.value < 100; m++) {
-
-        myProDialog.myProgressBar.value += 100 / processLength;
-
+        var processLength = preFilesLength * textArrayLength;
+        for (var m = 0; myProDialog.myProgressBar.value < 100; m++) {
+            myProDialog.myProgressBar.value += 100 / processLength;
+        }
     }
 
     myProDialog.close();
