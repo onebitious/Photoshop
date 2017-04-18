@@ -4,7 +4,7 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     var flag = false; //フラグの初期化
     while (flag == false) {
-        var myDialog = new Window('dialog', '書き出し設定', [800, 250, 1060, 450]); //見出し
+        var myDialog = new Window('dialog', '書き出し設定', [830, 480, 1090, 680]); //見出し
         myDialog.staticText = myDialog.add("statictext", [10, 5, 275, 25], "保存するファイル形式を選択してください。"); //固定テキスト
         myDialog.dropDownList = myDialog.add("dropdownlist", [10, 30, 250, 50], ["PNG", "JPEG", "GIF"]); //ドロップダウンリスト
         myDialog.dropDownList.selection = 0; //デフォルトで一番上のものを選択
@@ -26,7 +26,8 @@
             alert("処理を中断します。");
             break MAIN;
         }
-        if (myDialog.editText01.text.match(/[^\d+(\.\d+)?]/) || myDialog.editText02.text.match(/[^\d+(\.\d+)?]/) || myDialog.editText03.text.match(/[^\d+(\.\d+)?]/) || myDialog.editText04.text.match(/[^\d+(\.\d+)?]/)) { //数値以外が入力されたら繰り返す
+
+        if (isNaN(myDialog.editText01.text) == true || isNaN(myDialog.editText02.text) == true || isNaN(myDialog.editText03.text) == true || isNaN(myDialog.editText04.text) == true) { //数値以外が入力されたら繰り返す　※入力値はstringになる
             var flag = false;
             alert("整数、または小数を入力してください。");
         }
@@ -45,13 +46,13 @@
     }
     var preFolder = Folder.selectDialog("処理するフォルダを選択してください");
     if (!preFolder) {
-        alert("処理を中断します。"); //キャンセルの場合処理を抜ける
-        break MAIN;
+        alert("処理を中断します。");
+        break MAIN; //キャンセルの場合処理を抜ける
     }
     var afterFolder = Folder.selectDialog("保存するフォルダを選択してください");
     if (!afterFolder) {
-        alert("処理を中断します。"); //キャンセルの場合処理を抜ける
-        break MAIN;
+        alert("処理を中断します。");
+        break MAIN; //キャンセルの場合処理を抜ける
     }
     var preFiles = new Array;
     var preFiles = preFolder.getFiles(); //処理前のフォルダから全てのファイルを取得
@@ -62,10 +63,12 @@
     /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     リサイズと保存処理
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-    var myProDialog = new Window('palette', '処理中...', [100, 100, 505, 180]);
-    myProDialog.myProgressBar = myProDialog.add("progressbar", [10, 30, 10 + 384, 30 + 15], 0, 100);
+    //▼プログレッシブバー表示
+    var myProDialog = new Window('palette', '処理中...', [800, 480, 1200, 560]);
+    myProDialog.myProgressBar = myProDialog.add("progressbar", [10, 30, 394, 45], 0, 100);
     myProDialog.show();
 
+    //▼処理
     for (var j = 0, preFilesLength = preFiles.length; j < preFilesLength; j++) { //開いてから処理を開始する
         var doc = app.activeDocument; //ドキュメント
         var fileName = doc.name; //ファイル名
@@ -82,7 +85,7 @@
                 var fileObj = new File(afterFolder + "/" + fileName[0]); // 1の場合のファイル名の処理
             }
 
-            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれたものを関数に格納
+            var n = myDialog.dropDownList.selection; //ドロップダウンリストで選ばれた保存形式を関数に格納
 
             //▼保存
             switch (n + 0) {
@@ -97,6 +100,10 @@
                     break;
             }
 
+            //▼プログレッシブバーの値
+            var processLength = preFilesLength * textArrayLength; //総処理画像数
+            myProDialog.myProgressBar.value += 100 / processLength;
+
             //▼復帰
             var desc = new ActionDescriptor();
             var revert = charIDToTypeID('Rvrt');
@@ -104,14 +111,10 @@
         }
         //▼保存しないで閉じる
         activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-
-        var processLength = preFilesLength * textArrayLength;
-        for (var m = 0; myProDialog.myProgressBar.value < 100; m++) {
-            myProDialog.myProgressBar.value += 100 / processLength;
-        }
     }
-
+    //▼プログレスバーを閉じる
     myProDialog.close();
+
     alert("処理が終わりました");
 }
 
