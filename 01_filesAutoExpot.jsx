@@ -12,6 +12,7 @@ MAIN: { //ラベル
     var flag = false; //フラグの初期化
     while (flag == false) {
         var myDialog = new Window('dialog', '書き出し設定', [830, 480, 1090, 680]); //見出し
+        myDialog.center();
         myDialog.staticText = myDialog.add("statictext", [10, 5, 275, 25], "保存するファイル形式を選択してください。"); //固定テキスト
         myDialog.dropDownList = myDialog.add("dropdownlist", [10, 30, 250, 50], ["PNG", "JPEG", "GIF"]); //ドロップダウンリスト
         myDialog.dropDownList.selection = 0; //デフォルトで一番上のものを選択
@@ -72,6 +73,7 @@ MAIN: { //ラベル
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     //▼プログレッシブバー表示
     var myProDialog = new Window('palette', '処理中...', [800, 480, 1200, 560]);
+    myProDialog.center();
     myProDialog.myProgressBar = myProDialog.add("progressbar", [10, 30, 394, 45], 0, 100);
     myProDialog.show();
 
