@@ -39,7 +39,6 @@ MAIN: { //ラベル
         myDialog.center();
         myDialog.staticText = myDialog.add("statictext", [10, 5, 275, 25], "いくつおきに処理しますか？"); //固定テキスト
         myDialog.inputNum = myDialog.add("edittext", [10, 35, 100, 45], "0"); //入力欄。デフォルトは「0」
-        ]
         myDialog.okBtn = myDialog.add("button", [135, 70, 220, 35], "OK", {
             name: "ok"
         }); //OKボタン
